@@ -21,6 +21,7 @@ class RouteHelper
             'snipcart' => 'snipcart/overview/index',
             'snipcart/orders' => 'snipcart/orders/index',
             'snipcart/order/<orderId>' => 'snipcart/orders/order-detail',
+            'snipcart/packingslip/<orderId>' => 'snipcart/orders/order-packingslip',
             'snipcart/customers' => 'snipcart/customers/index',
             'snipcart/customer/<customerId>' => 'snipcart/customers/customer-detail',
             'snipcart/discounts' => 'snipcart/discounts/index',

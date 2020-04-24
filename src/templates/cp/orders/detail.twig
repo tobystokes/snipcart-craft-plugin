@@ -135,6 +135,10 @@ TODO:
             {{ csrfInput() }}
 
             {{ forms.textField({
+
+        <a class="btn" target="_blank" href="{{ url('snipcart/packingslip/'~order.token) }}">
+            {{- "Print packing slip"|t -}}
+        </a>
                 first: true,
                 label: 'Refund Amount'|t,
                 id: 'amount',

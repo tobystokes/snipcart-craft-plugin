@@ -1,0 +1,213 @@
+{# @var order \workingconcept\snipcart\models\Order #}
+
+<html>
+	<head>
+		<title>{{ "Snipcart packing slip "~order.invoiceNumber|t }}</title>
+		<link rel="stylesheet" href="https://use.typekit.net/uwd5jck.css">
+		<link rel="preload" href="https://use.typekit.net/uwd5jck.css" as="style" crossorigin>
+		<style>
+			body,
+			html {
+				background: white;
+				font-family: adobe-garamond-pro, Georgia, serif;
+			}
+
+			body {
+				margin: 1cm;
+			}
+
+			header,
+			footer {
+				text-align: center;
+				padding: 1cm;
+			}
+
+			.col {
+				width: 40%;
+				margin: 1cm 5%;
+				float: left;
+			}
+			.address {
+				border: 1pt black solid;
+				padding: 0.5cm;
+				position: relative;
+			}
+
+			br {
+				clear: both;
+			}
+
+			h4,
+			th,
+			dt {
+				text-transform: uppercase;
+				font-weight: normal;
+				font-size: 80%;
+				margin: 0;
+			}
+
+			dl {
+				border-top: 1pt solid black;
+				border-bottom: 1pt solid black;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin: 0;
+			}
+
+			dl + dl {
+				margin-top: -1px;
+			}
+
+			dt,
+			dd {
+				display: inline-block;
+				padding: 0.125cm 0.25cm;
+				margin: 0;
+				/* overflow: hidden; */
+			}
+
+			table {
+				margin: 1cm 5%;
+				border-collapse: collapse;
+				width: 90%;
+			}
+
+			td,
+			th {
+				padding: 0.125cm 0.25cm;
+				text-align: left;
+				border-top: 1pt solid black;
+			}
+		</style>
+	</head>
+	<body>
+
+		<header><img src="/assets/images/site/logo-ct-header.svg" width="480" height="110" alt="Chelsea Textiles">
+		</header>
+
+		<div class="col">
+			<h4>Shipping
+				{% if order.shippingAddressSameAsBilling %}
+					+ Billing
+				{% endif %}
+				Address</h4>
+			<div class="address">
+				{{ order.shippingAddressName }}<br>
+				{% if order.shippingAddressCompanyName %}
+					{{ order.shippingAddressCompanyName }}<br>
+				{% endif %}
+				{{ order.shippingAddressAddress1 }}<br>
+				{% if order.shippingAddressAddress2 %}
+					{{ order.shippingAddressAddress2 }}<br>
+				{% endif %}
+				{{ order.shippingAddressCity }},
+				{{ order.shippingAddressProvince }}
+				{{ order.shippingAddressPostalCode }}<br>
+				{{ order.shippingAddressCountry }}
+
+			</div>
+		</div>
+
+		{% if order.shippingAddressSameAsBilling != true %}
+
+			<div class="col">
+				<h4>Billing Address</h4>
+				<div class="address">
+					{{ order.billingAddressName }}<br>
+					{% if order.billingAddressCompanyName %}
+						{{ order.billingAddressCompanyName }}<br>
+					{% endif %}
+					{{ order.billingAddressAddress1 }}<br>
+					{% if order.billingAddressAddress2 %}
+						{{ order.billingAddressAddress2 }}<br>
+					{% endif %}
+					{{ order.billingAddressCity }},
+					{{ order.billingAddressProvince }}
+					{{ order.billingAddressPostalCode }}<br>
+
+				</div>
+			</div>
+
+		{% endif %}
+
+		<br/>
+
+		<div class="col">
+			<dl>
+				<dt>Order Date</dt>
+				<dd>{{ order.creationDate | date('n/j/Y') }}</dd>
+			</dl>
+			<dl>
+				<dt>Order id</dt>
+				<dd>{{ order.invoiceNumber }}</dd>
+			</dl>
+			<dl>
+				<dt>Shipping method</dt>
+				<dd>{{ order.shippingMethod }}</dd>
+			</dl>
+		</div>
+		<div class="col">
+			<dl>
+				<dt>Placed by</dt>
+				<dd>{{ order.cardHolderName }}</dd>
+			</dl>
+			<dl>
+				<dt>email</dt>
+				<dd>{{ order.email }}</dd>
+			</dl>
+			{% if order.shippingAddressPhone %}
+				<dl>
+					<dt>Phone</dt>
+					<dd>{{ order.shippingAddressPhone }}</dd>
+				</dl>
+			{% endif %}
+			{% if order.notes %}
+				<dl>
+					<dt>Notes</dt>
+					<dd>{{ order.notes }}</dd>
+				</dl>
+			{% endif %}
+		</div>
+
+		<br/>
+
+		<table>
+			<thead>
+				<th>Qty</th>
+				<th>Name</th>
+				<th></th>
+			</thead>
+			<tbody>
+				{% for item in order.items %}
+					<tr>
+						<td>
+							{{ item.quantity }}
+						</td>
+						<td>
+							{{ item.name }}
+						</td>
+						<td>
+
+							{% if item.customFields | length %}
+								{% for custom in item.customFields %}
+									{{ custom.name }}:
+									<b>{{ custom.value }}</b>
+									{% if loop.last != true %}<br>
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
+						</td>
+
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<script>
+			badstyles = document.querySelectorAll('[rel=stylesheet]');
+badstyles.forEach(me => me.remove());
+		</script>
+	</body>
+</html>

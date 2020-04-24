@@ -76,6 +76,24 @@ class OrdersController extends \craft\web\Controller
     }
 
     /**
+     * Display order packingslip.
+     * @param string $orderId
+     * @return \yii\web\Response
+     * @throws
+     */
+    public function actionOrderPackingslip(string $orderId): \yii\web\Response
+    {
+        $order = Snipcart::$plugin->orders->getOrder($orderId);
+
+        return $this->renderTemplate(
+            'snipcart/cp/orders/packingslip',
+            [
+                'order' => $order,
+            ]
+        );
+    }
+
+    /**
      * Refund an order.
      * @return \yii\web\Response
      * @throws \craft\errors\MissingComponentException
