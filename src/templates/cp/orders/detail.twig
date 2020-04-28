@@ -125,6 +125,10 @@ TODO:
         </div>
         {% endif %#}
 
+		<a class="btn" target="_blank" href="{{ url('snipcart/packingslip/'~order.token) }}">
+			{{- "Print packing slip"|t -}}
+		</a>
+
         {% if totalRefunded is not defined or totalRefunded < order.finalGrandTotal -%}
             <a href="#" class="btn" id="refund-order-btn">{{ "Refund Order …"|t }}</a>
         {%- endif %}
@@ -135,10 +139,6 @@ TODO:
             {{ csrfInput() }}
 
             {{ forms.textField({
-
-        <a class="btn" target="_blank" href="{{ url('snipcart/packingslip/'~order.token) }}">
-            {{- "Print packing slip"|t -}}
-        </a>
                 first: true,
                 label: 'Refund Amount'|t,
                 id: 'amount',
