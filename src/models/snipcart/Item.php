@@ -6,22 +6,23 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 use craft\base\ElementInterface;
+use workingconcept\snipcart\models\snipcart\PaymentSchedule;
+use workingconcept\snipcart\helpers\ModelHelper;
 use workingconcept\snipcart\records\ProductDetails as ProductDetailsRecord;
-use craft\base\Element;
 use craft\elements\MatrixBlock;
 
+/**
+ * Class Item
+ *
+ * @package workingconcept\snipcart\models\snipcart
+ *
+ * @property PaymentSchedule|null $paymentSchedule
+ */
 class Item extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
-    
-    // Properties
-    // =========================================================================
-
     /**
      * @var string Snipcart's own unique ID for the item.
      */
@@ -177,7 +178,6 @@ class Item extends \craft\base\Model
      */
     public $addedOn;
 
-
     /**
      * @var string
      */
@@ -209,11 +209,6 @@ class Item extends \craft\base\Model
     public $metadata;
 
     /**
-     * @var PaymentSchedule
-     */
-    public $paymentSchedule;
-
-    /**
      * @var
      */
     public $hasTaxesIncluded;
@@ -238,9 +233,10 @@ class Item extends \craft\base\Model
      */
     public $cancellationAction;
 
-
-    // Public Methods
-    // =========================================================================
+    /**
+     * @var PaymentSchedule
+     */
+    private $paymentSchedule;
 
     /**
      * @inheritdoc
@@ -248,6 +244,14 @@ class Item extends \craft\base\Model
     public function datetimeAttributes(): array
     {
         return ['modificationDate'];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function extraFields(): array
+    {
+        return ['paymentSchedule'];
     }
 
     /**
@@ -261,19 +265,16 @@ class Item extends \craft\base\Model
     public function getRelatedElement($entryOnly = false)
     {
         // get related record by SKU
-        if ( ! $record = ProductDetailsRecord::findOne([ 'sku' => $this->id ]))
-        {
+        if (! $record = ProductDetailsRecord::findOne([ 'sku' => $this->id ])) {
             // bail without a Record, which can happen if the product's details
             // aren't stored in our Product Details field type
             return null;
         }
 
-        if ($element = \Craft::$app->getElements()->getElementById($record->elementId))
-        {
+        if ($element = \Craft::$app->getElements()->getElementById($record->elementId)) {
             $isMatrix = $element && get_class($element) === MatrixBlock::class;
 
-            if ($isMatrix && $entryOnly)
-            {
+            if ($isMatrix && $entryOnly) {
                 return $element->getOwner();
             }
 
@@ -284,4 +285,34 @@ class Item extends \craft\base\Model
         return null;
     }
 
+    /**
+     * @return PaymentSchedule|null
+     */
+    public function getPaymentSchedule()
+    {
+        return $this->paymentSchedule;
+    }
+
+    /**
+     * @param PaymentSchedule|array|null $paymentSchedule
+     * @return PaymentSchedule|null
+     */
+    public function setPaymentSchedule($paymentSchedule)
+    {
+        if ($paymentSchedule === null) {
+            return $this->paymentSchedule = null;
+        }
+
+
+        if (! $paymentSchedule instanceof PaymentSchedule) {
+            $paymentScheduleData = ModelHelper::stripUnknownProperties(
+                $paymentSchedule,
+                PaymentSchedule::class
+            );
+
+            $paymentSchedule = new PaymentSchedule((array) $paymentScheduleData);
+        }
+
+        return $this->paymentSchedule = $paymentSchedule;
+    }
 }

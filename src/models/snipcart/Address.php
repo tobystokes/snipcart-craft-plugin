@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 /**
  * Class Address
@@ -15,13 +15,6 @@ namespace workingconcept\snipcart\models;
  */
 class Address extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
-
-    // Properties
-    // =========================================================================
-
     /**
      * @var string Full name of addressee.
      */
@@ -93,13 +86,14 @@ class Address extends \craft\base\Model
     public $vatNumber;
 
     /**
-     * @var string|null Used only via Settings->shipFrom; not part of Snipcart's own API.
+     * @var string|null Used only via Settings->shipFrom; not part of Snipcart’s own API.
      */
     public $email;
 
-    
-    // Public Methods
-    // =========================================================================
+    /**
+     * @var bool
+     */
+    public $hasMinimalRequiredInfo;
 
     /**
      * @return string|null
@@ -108,10 +102,11 @@ class Address extends \craft\base\Model
     {
         $num = $this->phone;
 
-        if (strlen($num) === 10 && is_numeric($num))
-        {
+        if (strlen($num) === 10 && is_numeric($num)) {
             // format US phone numbers (555) 555-5555
-            return ($num)?'('.substr($num,0,3).') '.substr($num,3,3).'-'.substr($num,6,4):'&nbsp;';
+            return ($num) ?
+                '('.substr($num,0,3).') '.substr($num,3,3).'-'.substr($num,6,4)
+                : '&nbsp;';
         }
 
         return $num;

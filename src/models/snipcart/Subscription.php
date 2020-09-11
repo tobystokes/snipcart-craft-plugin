@@ -6,25 +6,21 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
+
+use workingconcept\snipcart\Snipcart;
 
 /**
  * Class Subscription
  * https://docs.snipcart.com/v2/api-reference/subscriptions
+ *
  * @package workingconcept\snipcart\models
  */
 class Subscription extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
     const STATUS_ACTIVE   = 'Active';
     const STATUS_PAUSED   = 'Paused';
     const STATUS_CANCELED = 'Canceled';
-
-
-    // Properties
-    // =========================================================================
 
     /**
      * @var
@@ -141,10 +137,6 @@ class Subscription extends \craft\base\Model
      */
     public $invoiceNumber;
 
-
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -163,5 +155,8 @@ class Subscription extends \craft\base\Model
         return 'https://app.snipcart.com/dashboard/subscriptions/' . $this->id;
     }
 
-
+    public function getInvoices(): array
+    {
+        return Snipcart::$plugin->subscriptions->getSubscriptionInvoices($this->id);
+    }
 }
